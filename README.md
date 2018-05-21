@@ -4,7 +4,7 @@ It changes your background and allows you to customize it via HTML, using electr
 # Setup
 
 ```
-npm i desktop-background
+npm i node-desktop
 npm install
 npm start
 ```
