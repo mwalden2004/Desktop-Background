@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="UTF-8">
+	  <script src="/socket.io/socket.io.js"></script>
+   </head>
+   <body onload="init()">
+      <p class="greeting">Good affternoon Matthew.</p>
+      <p class="time" id="time">4:30PM</p>
+	  
+      <div id="verseoftheday" style="clear:both">
+		<div id="vod_container">
+         <p id="vodheader">Verse of the Day</p>
+         <p id="vod"></p>
+         <p id="verse"></p>
+		 </div>
+      </div>
+      <div id="weather">
+      </div>
+      <div id="spotifyNowPlaying">
+	  <div id="spotifycontainer">
+	  <p class="nowplayingheader">Now Playing</p>
+	  <p class="nowplaying" id="musicplaying">I have a unknown name ~ 200 degrees mr feringheight</p>
+	  </div>
+	  <div id="progressbar">
+		<div id="percentprogress"></div>
+	  </div>
+      </div>
+	  
+	  <div style="position: absolute; background-color: white; width: 33%; height: auto; color: #000000; border-radius: 33px; bottom: 2%; left: 2%; opacity: 0.7;" id="WeatherDiv">
+	  <div id="weathercontainer" style="">
+		<div id="weathertop" style="padding-left: 5%; padding-right: 5%;">
+		
+		
+		<p style="text-align: center; color: #000000; font-size: 32px; font-family: 'Circular Std Black';">Weather for</p>
+		<p style="text-align: center; color: #000000; font-size: 34px; font-family: 'Circular Std Medium'; margin-top: -7%;" id="townname">Bob's Town in joshua town</p>
+		<p style="text-align: center; color: #000000; font-size: 32px; font-family: 'Circular Std Book'; margin-top: -4.5%;" id="weatherdesc">Mostly cloudy starting later this afternoon</p>
+		</div>
+		
+		<hr id="divider" align="center" width="50%" style="color: 242424#;">
+		
+		<div id="weathermiddle" style="padding-left: 10%; padding-right: 10%;">
+		
+		<p id="feelslike" style="text-align: center; font-family: 'Circular Std Book'; font-size: 32px;">Feels like: 89˚</p>
+		
+		<div id="middleholder" style="margin-top: -15%;">
+		<div id="leftColuem" style="float:left;">
+			<p id="low" style="font-family: 'Circular Std Book'; font-size: 32px;">Low: 66˚</p>
+			<p id="high" style="font-family: 'Circular Std Book'; font-size: 32px;">High 88˚</p>
+		</div>
+		
+		<div id="rightColum" style="float:right;">
+			<p id="sunrise" style="font-family: 'Circular Std Book'; font-size: 32px;">Sunrise: 5:38AM</p>
+			<p id="sunset" style="font-family: 'Circular Std Book'; font-size: 32px;">Sunset: 9:49PM</p>
+		</div>
+		</div>
+		
+		<p id="humidity" style="margin-top: 45%; text-align: center; font-family: 'Circular Std Book'; font-size: 32px; clear: both;">Humidity: 0.48</p>
+		
+		</div>
+		
+		<hr id="divider" align="center" width="50%" style="color: 242424#;">
+		
+		<div id="weatherbottom" style="padding-left: 5%; padding-right: 5%;">
+		<p style="text-align: center; font-size: 28px; font-family: 'Circular Std Book'; color: #000000; padding-right: 10%; padding-left: 10%;" id="dailydesc">Light rain throughout the week, with high temperatures falling to 76°F on Monday.</p>
+		</div>
+	  </div>
+	  
+	  </div>
+	  
+	  
+      <script>
+	  let name;
+	  function move(width) {
+		var elem = document.getElementById("percentprogress"); 
+		elem.style.width = width + '%'; 
+	}
+		let xhr = new XMLHttpRequest();xhr.open('GET', 'http://localhost:4958/desktop/name'); xhr.onload = function() {if (xhr.status === 200) {name= xhr.responseText;}else {}};xhr.send();
+         let socket = io();
+		 
+		 socket.emit("weatherupdate","justneedanupdatemyfriend");
+		 socket.on("weatherresp",function(data){
+				console.log(data)
+				const rise = data.Sunrise;
+				const set = data.Sunset;
+				const today = data.Today;
+				const daily = data.Daily;
+				const feels = data.Feels;
+				const high = data.High;
+				const low = data.Low;
+				const humid = data.Humidity;
+				const town = data.town;
+				document.getElementById("townname").innerHTML = town;
+				document.getElementById("weatherdesc").innerHTML = today;
+				document.getElementById("feelslike").innerHTML = "Feels like: "+feels+"°";
+				document.getElementById("low").innerHTML = "Low: "+low+"°";
+				document.getElementById("high").innerHTML = "High: "+high+"°";
+				document.getElementById("sunrise").innerHTML = "Sunrise: "+rise;
+				document.getElementById("sunset").innerHTML = "Sunset: "+set;
+				document.getElementById("humidity").innerHTML = "Humidity: "+humid;
+				document.getElementById("dailydesc").innerHTML = daily;
+			})
+		 
+           function init(){
+         	var someimage = 'http://localhost:4958/desktop/image';
+         	document.body.style.background = 'url('+someimage+')'
+           }
+           
+		   
+           setInterval(function(){
+         	let time = new Date();
+         	let timeString;
+         	let timeam;
+			let minutes = time.getMinutes();
+			if (time.getMinutes() <= 9){
+				minutes = "0"+time.getMinutes().toString();
+			}
+			if (time.getHours() >= 11){
+         		document.getElementsByClassName("greeting").innerHTML = "Good affternoon " + name;
+         	}else{
+         		document.getElementsByClassName("greeting").innerHTML = "Good morning " + name;
+         	}
+         	if (time.getHours() >= 12){
+         		timeString = time.getHours()-12 + ":"+minutes+"PM";
+         	}else{
+         		timeString = time.getHours()+":"+minutes+"AM";
+         	}
+                document.getElementById("time").innerHTML = timeString;
+				
+				socket.emit("nowplaying","justneedanupdatemyfriend");
+				socket.on("musicplaying",function(data){
+					document.getElementById("musicplaying").innerHTML = data["title"];
+					move(data["playbackpercent"])
+				})
+				
+           }, 1000);
+           
+		   setInterval(function(){
+			socket.emit("weatherupdate","justneedanupdatemyfriend");
+         }, 60000);
+		   
+         let abcxhr = new XMLHttpRequest();
+         abcxhr.open('GET', 'https://beta.ourmanna.com/api/v1/get/?format=json&order=random');
+         abcxhr.onload = function() {
+         	if (abcxhr.status === 200) {
+         		const resp = abcxhr.responseText;
+         		 const parsed = JSON.parse(resp);
+         		 document.getElementById("vod").innerHTML = parsed["verse"]["details"]["text"];
+         		 document.getElementById("verse").innerHTML = parsed["verse"]["details"]["reference"];
+         	}
+         	else {
+         	}
+         };
+         abcxhr.send();
+           
+         require('./renderer.js')
+      </script>
+   </body>
+   <style>
+      body {
+      padding: 0%;
+      margin: 0%;
+      border: none;
+      }
+	  
+      .greeting {
+	  margin-left: 3%;
+      margin-top: 1.5%;;
+      font-size: 85px;
+      font-family: "Circular Std Medium";
+      color: white;
+      float: left;
+      }
+	  
+      .time {
+      margin-top: 1%;
+      margin-right: 2%;
+      font-size: 85px;
+      font-family: "Circular Std Medium";
+      float: right;
+      transform: rotate(5deg);
+      color: white;
+      }
+	  
+      #verseoftheday {
+	  position: absolute;
+	  top: 55%;
+	  right: 1.5%;
+      background-color: white;
+      font-family: "Circular Std Book";
+      color: rgba(41, 41, 41, 1);
+      background-color: #FFFFFF;
+      opacity: 0.56;
+      height: auto%;
+	  width: 35%;
+      }
+	  
+      #vodheader{
+	  margin-top: -0.7%;
+	  padding-left: 8px;
+      font-size: 52px;
+	  opacity 1;
+      }
+	  
+      #vod{
+	  margin-top: -4.5%;
+	  padding-left: 4px;
+      font-size: 21px;
+	  opacity 1;
+      }
+	  
+      #verse{
+	  padding-left: 4px;
+      font-size: 26px;
+	  opacity 1;
+      }
+	  
+	  
+	  #spotifyNowPlaying{
+	  position:absolute;
+	  font-family: "Circular Std Book";
+	  color: #000000;
+	  width: 507px;
+	  height: 89px;
+	  bottom:8%;
+	  right: 3%;
+	  margin-left: 3%;
+	  }
+	  
+	  .nowplayingheader{
+	  padding-left: 5px;;
+	  font-size: 37px;
+	  border: 6px 15px 0px 0px;
+	  background-color: white;
+	  border-top-right-radius: 8px;
+	  }
+	  
+	  .nowplaying{
+	  padding-left: 8px;
+	  margin-top: -7.5%;
+	  font-size: 24px;
+	  background-color: white;
+	  }
+	  
+	  #progressbar {
+		width: 100%;
+		height: 15%;
+		margin-top: -4.8%;
+		background-color: #D4D4D4;
+	  }
+	  
+	  #percentprogress {
+		height: 100%;
+		background-color: #23B991;
+	  }
+	  
+	  
+   </style>
+</html>

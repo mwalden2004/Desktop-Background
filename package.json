@@ -1,0 +1,45 @@
+{
+  "name": "desktop-background",
+  "version": "1.0.0",
+  "description": "It changes your background and allows you to customize it via HTML, using electron. This is fully programed to allow you to use your name, see weather for your area, verse of the day, and your spotify now plaiying. All using NodeJS",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/electron/electron-quick-start.git"
+  },
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "^2.0.0"
+  },
+  "dependencies": {
+    "cities": "^1.1.2",
+    "express": "^4.16.3",
+    "geo-tz": "^4.0.1",
+    "jsdom": "^11.10.0",
+    "node-cron": "^1.2.1",
+    "node-spotify-helper": "^0.4.7",
+    "nowplaying": "^2.0.0",
+    "openweathermap-node": "^1.1.2",
+    "request": "^2.87.0",
+    "socket.io": "^2.1.1",
+    "spotify-web-helper": "^1.14.0",
+    "spotify-webhelper": "0.0.11",
+    "unix-timestamp": "^0.2.0",
+    "wallpaper": "^3.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/electron/electron-quick-start/issues"
+  },
+  "homepage": "https://github.com/electron/electron-quick-start#readme"
+}
