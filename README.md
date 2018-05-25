@@ -5,6 +5,10 @@ It changes your background and allows you to customize it via HTML, using electr
 
 ```
 npm i node-desktop
+cd ./node-modules/node-desktop
 npm install
 npm start
 ```
+
+#Compatabillity
+It only works on windows I think...
